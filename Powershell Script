@@ -1,0 +1,42 @@
+# Run on Powershell
+# Install Microsoft Graph PowerShell Module
+Install-Module -Name Microsoft.Graph -Scope CurrentUser
+
+# Run the Connect-MgGraph Command To connect to your tenant, run:
+Connect-MgGraph -Scopes "User.ReadWrite.All RoleManagement.ReadWrite.Directory"
+
+# Specify Your Tenant ID (Optional)
+Connect-MgGraph -Scopes "User.ReadWrite.All RoleManagement.ReadWrite.Directory" -TenantId "your-tenant-id"
+# Replace your-tenant-id with your Azure AD tenant's ID. You can find the tenant ID in the Azure Portal:
+
+# Go to Azure Active Directory > Overview > Tenant ID.
+# Authenticate Using a Service Principal (Optional for Automation)
+# If you want to avoid manual login and use a script for automation, set up an app registration and authenticate using a client ID, client secret, and tenant ID:
+a. Create an App Registration in Azure AD:
+
+# Go to the Azure Portal: Azure Active Directory > App registrations > New registration.
+# Provide a name (e.g., "Automation Script").
+# Select Accounts in this organizational directory only.
+# Click Register.
+# b. Grant API Permissions to the App:
+
+# Go to the app's API permissions section.
+# Add permissions for Microsoft Graph:
+# Delegated permissions: User.ReadWrite.All, RoleManagement.ReadWrite.Directory.
+# Application permissions (for background scripts): User.ReadWrite.All, RoleManagement.ReadWrite.Directory.
+# Click Grant admin consent.
+# c. Create a Client Secret:
+
+# Go to the app's Certificates & secrets section.
+# Click New client secret, provide a description, and set an expiration date.
+# Copy the client secret value (you won't see it again).
+
+# Authenticate with Connect-MgGraph: Use the following PowerShell command:
+Connect-MgGraph -ClientId "your-client-id" -TenantId "your-tenant-id" -ClientSecret "your-client-secret"
+# Replace:
+# your-client-id with the app registration's Application (client) ID.
+# your-tenant-id with your Azure AD tenant ID.
+# your-client-secret with the secret you just created.
+
+# Verify the Connection After running the Connect-MgGraph command, verify the connection:
+Get-MgContext
