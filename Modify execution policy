@@ -1,0 +1,14 @@
+# Step 1: Check Current Execution Policy
+# Run the following command to check the current execution policy:
+Get-ExecutionPolicy -List
+# This will show the policies applied at different scopes (e.g., LocalMachine, CurrentUser).
+
+# Set the Execution Policy
+# To allow scripts to run, set the execution policy to a less restrictive level. You can use:
+# For the Current User (Recommended):
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+# RemoteSigned: Requires that scripts downloaded from the internet are signed by a trusted publisher.
+
+# Step 3: Retry the Command
+# After adjusting the policy, retry your command:
+Import-Module Microsoft.Graph.Authentication
