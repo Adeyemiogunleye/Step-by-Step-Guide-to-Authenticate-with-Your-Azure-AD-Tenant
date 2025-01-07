@@ -40,3 +40,34 @@ Connect-MgGraph -ClientId "your-client-id" -TenantId "your-tenant-id" -ClientSec
 
 # Verify the Connection After running the Connect-MgGraph command, verify the connection:
 Get-MgContext
+
+Ensure you have the required permissions, such as User.ReadWrite.All and RoleManagement.ReadWrite.Directory
+
+# Define the user's details
+$userDisplayName = "Yemi" ## Change name
+$userEmail = "yemi@gmail.com"  ## change email
+$userPassword = "SecurePassword123!" # Replace with a strong password
+$roleName = "Global Administrator"
+
+# Create the user
+$user = New-MgUser -AccountEnabled $true -DisplayName $userDisplayName `
+    -MailNickname $userDisplayName.ToLower() -UserPrincipalName $userEmail `
+    -PasswordProfile @{ForceChangePasswordNextSignIn = $true; Password = $userPassword}
+
+Write-Host "User created successfully with Object ID:" $user.Id
+
+# Get the role definition for "Global Administrator"
+$role = Get-MgDirectoryRole | Where-Object {$_.DisplayName -eq $roleName}
+
+if (-not $role) {
+    Write-Host "Role $roleName not found. Ensure it exists in your Azure AD tenant." -ForegroundColor Red
+    return
+}
+
+Write-Host "Role found. Assigning Global Administrator role..."
+
+# Assign the role to the user
+New-MgDirectoryRoleMemberByRef -DirectoryRoleId $role.Id -BodyParameter @{ "@odata.id" = "https://graph.microsoft.com/v1.0/directoryObjects/$($user.Id)" }
+
+Write-Host "Role assigned successfully to user $userEmail."
+
